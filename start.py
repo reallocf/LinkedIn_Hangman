@@ -27,12 +27,18 @@ def remove_incorrect_words(gameBoard):
 # the computer decides which is the right move and selects it for you via a decision tree
 def get_best_move(gameBoard):
     remove_incorrect_words(gameBoard)
+    #print(gameBoard.wordsList) # uncomment this for coolness
+    if gameBoard.wordsListLen == 1:
+        print("Best selected: " + gameBoard.wordsList[0])
+        return gameBoard.wordsList[0]
     charPicker = CharPicker()
     # loop through every char in every remaining word and return the letter with
     # the most total occurrences
     for word in gameBoard.wordsList:
+        wordMap = {}
         for char in word:
-            if char not in gameBoard.guesser.guessedChars:
+            if char not in gameBoard.guesser.guessedChars and char not in wordMap:
+                wordMap[char] = 1
                 if char in charPicker.charMap:
                     charPicker.charMap[char] += 1
                 else:
@@ -40,28 +46,33 @@ def get_best_move(gameBoard):
                 if charPicker.charMap[char] > charPicker.maxCount:
                     charPicker.pickedChar = char
                     charPicker.maxCount = charPicker.charMap[char]
+    print("Best selected: " + charPicker.pickedChar)
     return charPicker.pickedChar
 
 class Guesser:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.guessedChars = {}
         self.incorrectCount = 0
         self.correctCount = 0
 
     # return 1 if correct guess, return 0 if incorrect guess or user error
     # user errors include guesses that are:
-    # 	multiple characters
+    # 	multiple characters and not a guess of the full word
     # 	no characters
     # 	characters that are not in the alphabet
     # 	uppercase letters
     # 	guesses that have already been guessed
-    def make_guess(self, charMap, guess):
+    def make_guess(self, charMap, word, wordLen, guess):
         ret = 0
-        if len(guess) != 1 or not guess.isalpha() or not guess.islower():
-            print("Please input a single, lowercase letter.")
+        if (len(guess) != 1 and len(guess) != wordLen) or not guess.isalpha() or not guess.islower():
+            print("Incorrect input, submit '-help' for assistance.")
         elif guess in self.guessedChars:
             print("You've already guessed that, try again.")
+        elif guess == word:
+            print ("Correct guess!")
+            self.guessedChars[guess] = 1
+            self.correctCount = wordLen
+            ret = 1
         elif guess in charMap:
             print("Correct guess!")
             self.guessedChars[guess] = 1
@@ -79,7 +90,7 @@ class Guesser:
         self.incorrectCount = 0
         self.correctCount = 0
         while True:
-            response = input("Play again? [y/n] ")
+            response = input("Play again? [y/n]: ")
             if (response == "y" or response == "n"):
                 break
         return True if response == "y" else False
@@ -94,11 +105,11 @@ class SecretKeeper:
 
     # return difficulty when a numeric number between 1 and 10 has been selected by user
     def get_difficulty(self):
-        difficulty = input("Select difficulty (1-10) ")
+        difficulty = input("Select difficulty (1-10): ")
         while True:
             if difficulty.isnumeric() and 0 < int(difficulty) < 11:
                 break
-            difficulty = input("Please put in a number between 1 and 10 ")
+            difficulty = input("Please put in a number between 1 and 10: ")
         return int(difficulty)
 
     # GET word list from provided api, parse it, and select a random word from the list
@@ -153,7 +164,7 @@ class GameBoard:
         rightArm = " " if self.guesser.incorrectCount < 5 else "-"
         head = " " if self.guesser.incorrectCount < 6 else "O"
 
-        print("     ___")
+        print("\n     ___")
         print("    /   |")
         print("    {}   |     All guesses:".format(head))
         print("   {}{}{}  |     {}".format(leftArm, body, rightArm,
@@ -166,33 +177,41 @@ class GameBoard:
         self.print_current_board()
 
     def update_current_board(self, guess):
-        for i in range(len(self.secretKeeper.word)):
-            if self.secretKeeper.word[i] == guess:
-                self.currentBoard[i] = guess
+        if len(guess) > 1:
+            self.currentBoard = [char for char in self.secretKeeper.word]
+        else:
+            for i in range(len(self.secretKeeper.word)):
+                if self.secretKeeper.word[i] == guess:
+                    self.currentBoard[i] = guess
 
 # insert color - turtle library
 # understand errors better
 
 if __name__ == '__main__':
-    print("Welcome to Hangman!")
-    guesser = Guesser(input("Your name: "))
+    print("\n\n   Welcome to Hangman!\n\n")
+    guesser = Guesser()
     secretKeeper = SecretKeeper()
     gameBoard = GameBoard(guesser, secretKeeper)
 
     while True:
         gameBoard.print_game_area()
-        guess = input("Your guess: ")
-
-        if guess == "best":
+        guess = input("Your guess (type '-help' for assistance): ")
+        print()
+        if guess == "-help":
+            print("\n\n   Select a letter to guess,")
+            print("   try to guess the full word,")
+            print("   or type '-best' to have the computer guess for you")
+            continue
+        if guess == "-best":
             guess = get_best_move(gameBoard)
-        if guesser.make_guess(secretKeeper.charMap, guess):
+        if guesser.make_guess(secretKeeper.charMap, secretKeeper.word, secretKeeper.wordLen, guess):
             gameBoard.update_current_board(guess)
 
         if guesser.incorrectCount == 6 or guesser.correctCount == secretKeeper.wordLen:
             gameBoard.print_game_area()
             if guesser.incorrectCount == 6:
                 print("You have lost!")
-                print('The solution was "' + secretKeeper.word + '".')
+                print("The solution was '" + secretKeeper.word + "'.")
             else:
                 print("You won!!")
             if guesser.playAgain():
