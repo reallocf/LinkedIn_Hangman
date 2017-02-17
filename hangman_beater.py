@@ -1,4 +1,5 @@
 from termcolor import colored, cprint
+from hangman_printers import verbose_print
 
 class CharPicker:
     def __init__(self):
@@ -22,22 +23,12 @@ def remove_incorrect_words(gameBoard):
                 gameBoard.wordsList.remove(wordToRemove)
                 gameBoard.wordsListLen -= 1
 
-def verbose_print(gameBoard, charPicker):
-    print(colored("Words considered:\n", attrs=["bold"]) ,gameBoard.wordsList, "\n")
-    cprint("Characters considered:", attrs=["bold"])
-    for key in charPicker.charMap.keys():
-        if key == charPicker.pickedChar:
-            cprint(key + " :  " + str(charPicker.charMap[key]), "green", attrs=["bold"])
-        else:
-            print(key, ": ", charPicker.charMap[key])
-    print()
-
 # the computer decides which is the right move and selects it for you via a decision tree
 def get_best_move(gameBoard):
     remove_incorrect_words(gameBoard)
     if gameBoard.wordsListLen == 1:
         if gameBoard.verbose:
-            print(colored("Words considered:\n", attrs=["bold"]) ,gameBoard.wordsList, "\n")
+            print(colored("Words considered:\n", attrs=["bold"]), gameBoard.wordsList, "\n")
         print("Best selected: ", gameBoard.wordsList[0], "\n")
         return gameBoard.wordsList[0]
     charPicker = CharPicker()
@@ -57,5 +48,6 @@ def get_best_move(gameBoard):
                     charPicker.maxCount = charPicker.charMap[char]
     if gameBoard.verbose:
         verbose_print(gameBoard, charPicker)
-    print("Best selected: ", charPicker.pickedChar, "\n")
+    print("Best selected: ", charPicker.pickedChar)
+    print("Input -v to toggle -best's verbose mode\n")
     return charPicker.pickedChar

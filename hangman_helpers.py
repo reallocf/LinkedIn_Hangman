@@ -2,7 +2,18 @@ import sys
 import os
 import requests
 from termcolor import colored, cprint
+from hangman_beater import get_best_move
+from hangman_printers import verbose_print
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def welcome_message():
+    clear_screen()
+    cprint("\n\n   Welcome to Hangman!\n\n", "yellow", attrs=["bold"])
+
+# GET word list from provided api
+# throw error if requests library returns anything other than a 200 - "OK" - status code
 def make_api_request(payload):
     apiEndPoint = "http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words"
     try:
@@ -14,12 +25,20 @@ def make_api_request(payload):
         sys.exit()
     return wordsResponse
 
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def welcome_message():
-    clear_screen()
-    cprint("\n\n   Welcome to Hangman!\n\n", "yellow", attrs=["bold"])
+def handle_flag(guess, gameBoard):
+    ret = False
+    if guess == "-help":
+        print_guess_help()
+    elif guess == "-v":
+        gameBoard.verbose = not gameBoard.verbose
+        if (gameBoard.verbose):
+            verbose = "on"
+        else:
+            verbose = "off"
+        print("Verbose mode is now ", verbose)
+    else:
+        ret = get_best_move(gameBoard)
+    return ret
 
 def playAgain():
     while True:
