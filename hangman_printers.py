@@ -36,14 +36,14 @@ def print_difficulty_help():
     cprint("   Input a number between 1 and 10", "cyan", attrs=["bold"])
     cprint("   The generated word will be more complex if you put in a higher difficulty\n", "cyan", attrs=["bold"])
 
-
 def print_guess_help():
     cprint("   Select a letter to guess,", "cyan", attrs=["bold"])
     cprint("   try to guess the full word,", "cyan", attrs=["bold"])
     cprint("   or input '-best' to have the computer guess for you", "cyan", attrs=["bold"])
 
 def verbose_print(gameBoard, charPicker):
-    print(colored("Words considered:\n", attrs=["bold"]) ,gameBoard.wordsList, "\n")
+    cprint("Words considered:", attrs=["bold"])
+    print(gameBoard.wordsList, "\n")
     cprint("Characters considered:", attrs=["bold"])
     for key in charPicker.charMap.keys():
         if key == charPicker.pickedChar:
