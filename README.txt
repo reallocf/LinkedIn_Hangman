@@ -43,6 +43,7 @@ Play instructions:
 
     The one more complicating factor is the '-best' feature, which is explained in depth below.
 
+
 Extensions:
 
     I implemented a number of extensions in order to more fully flesh out the game.
