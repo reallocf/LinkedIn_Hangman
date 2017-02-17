@@ -140,6 +140,7 @@ Extensions:
 
     Finally, it would be really interesting to see how this challenge would be tackled with an even larger dictionary. I figure that, at scale (hundreds of millions of words), this algorithm won't work because it will take too long, so maybe approaching it from another perspective (is this where prefix trees come in?) will be more effective at the cost of accuracy. Or maybe you just need to throw the processing power of a few hundred locally networked servers at it.
 
+
 Anyways, thank you for the problem and I hope you have as much fun playing with my implementation as I did building it.
 
 I look forward to talking to you about this solution during my interview!
