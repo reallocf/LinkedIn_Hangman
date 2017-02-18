@@ -8,7 +8,6 @@ from hangman_printers import print_game_area, print_difficulty_help, print_guess
 class SecretKeeper:
     def __init__(self):
         self.difficulty = self.get_difficulty()
-        self.receivedWordsList = []
         self.word = self.get_word()
         self.wordLen = len(self.word)
         self.charMap = self.initialize_char_map()
@@ -27,9 +26,9 @@ class SecretKeeper:
     def get_word(self):
         payload = {"difficulty": self.difficulty}
         wordsResponse = make_api_request(payload)
-        self.receivedWordsList = wordsResponse.text.split()
-        selection = randint(0, len(self.receivedWordsList) - 1)
-        return self.receivedWordsList[selection]
+        receivedWordsList = wordsResponse.text.split()
+        selection = randint(0, len(receivedWordsList) - 1)
+        return receivedWordsList[selection]
 
     def initialize_char_map(self):
         charMap = {}
