@@ -2,8 +2,9 @@ import sys
 import os
 import requests
 from termcolor import colored, cprint
-from hangman_beater import get_best_move
-from hangman_printers import verbose_print
+from hangman_best import get_best_move
+from hangman_printers import print_guess_help
+from hangman_leaderboard import get_leaderboard, update_leaderboard
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -11,6 +12,7 @@ def clear_screen():
 def welcome_message():
     clear_screen()
     cprint("\n\n   Welcome to Hangman!\n\n", "yellow", attrs=["bold"])
+    get_leaderboard()
 
 # GET word list from provided api
 # throw error if requests library returns anything other than a 200 - "OK" - status code
@@ -40,7 +42,9 @@ def handle_flag(guess, gameBoard):
         ret = get_best_move(gameBoard)
     return ret
 
-def playAgain():
+def playAgain(won, gameBoard):
+    if won:
+        update_leaderboard(gameBoard)
     while True:
         response = input("Play again? [y/n]: ")
         if (response == "y" or response == "n"):

@@ -1,6 +1,7 @@
+import sys
 from random import randint
 from termcolor import colored, cprint
-from hangman_helpers import *
+from hangman_helpers import clear_screen, welcome_message, make_api_request, handle_flag, playAgain
 from hangman_printers import print_game_area, print_difficulty_help, print_guess_help
 
 class SecretKeeper:
@@ -103,7 +104,7 @@ if __name__ == '__main__':
         guess = input("Your guess (input '-help' for assistance): ")
         clear_screen()
         print()
-        if guess == "-help " or guess == "-best" or guess == "-v":
+        if guess == "-help" or guess == "-best" or guess == "-v":
             guess = handle_flag(guess, gameBoard)
             if not guess:
                 continue
@@ -116,7 +117,7 @@ if __name__ == '__main__':
                 print("The solution was '" + secretKeeper.word + "'.")
             else:
                 print("You won!!")
-            if playAgain():
+            if playAgain(gameBoard.incorrectCount != 6, gameBoard):
                 welcome_message()
                 secretKeeper = SecretKeeper()
                 gameBoard = GameBoard(secretKeeper, gameBoard.verbose)

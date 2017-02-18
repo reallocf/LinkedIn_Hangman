@@ -58,6 +58,8 @@ Extensions:
 
         Adding coloring and improving layout within the command line interface
 
+        Adding a leaderboard that connects to a postgresql database on a digital ocean droplet, allowing players to have a record of their number of wins
+
         Implementing the '-best' feature and it's '-v' verbose mode
 
 

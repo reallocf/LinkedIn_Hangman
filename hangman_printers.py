@@ -51,3 +51,15 @@ def verbose_print(gameBoard, charPicker):
         else:
             print(key, ": ", charPicker.charMap[key])
     print()
+
+def print_leaderboard(cursor):
+    cprint("      Leaderboard", "green")
+    print("     name  |  wins")
+    print("     -------------")
+    for row in cursor.fetchall():
+        print("    ", row[0], "  |  ", row[1])
+    print("\n\n")
+
+def print_leaderboard_help():
+    cprint("   Select a 3 character ID to add your victory to the leaderboard", "cyan", attrs=["bold"])
+    cprint("   You can also input nothing to not have your win recorded\n", "cyan", attrs=["bold"])
