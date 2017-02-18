@@ -6,6 +6,11 @@ from hangman_best import get_best_move
 from hangman_printers import print_guess_help
 from hangman_leaderboard import get_leaderboard, update_leaderboard
 
+# allow for a gracefull program exit with interrupt signal is given or api request fails
+def exit_gracefully(signal, frame):
+    print("\n")
+    sys.exit()
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -24,7 +29,7 @@ def make_api_request(payload):
             raise Exception(colored("\nError requesting from server.\n", "red"))
     except Exception as e:
         print(str(e))
-        sys.exit()
+        exit_gracefully()
     return wordsResponse
 
 def handle_flag(guess, gameBoard):

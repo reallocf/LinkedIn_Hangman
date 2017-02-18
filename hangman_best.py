@@ -49,5 +49,5 @@ def get_best_move(gameBoard):
     if gameBoard.verbose:
         verbose_print(gameBoard, charPicker)
     print("Best selected: ", charPicker.pickedChar)
-    print("Input -v to toggle -best's verbose mode\n")
+    print("\nInput -v to toggle -best's verbose mode\n")
     return charPicker.pickedChar

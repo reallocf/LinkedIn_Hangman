@@ -1,7 +1,8 @@
 import sys
+import signal
 from random import randint
 from termcolor import colored, cprint
-from hangman_helpers import clear_screen, welcome_message, make_api_request, handle_flag, playAgain
+from hangman_helpers import exit_gracefully, clear_screen, welcome_message, make_api_request, handle_flag, playAgain
 from hangman_printers import print_game_area, print_difficulty_help, print_guess_help
 
 class SecretKeeper:
@@ -95,6 +96,7 @@ class GameBoard:
                     self.currentBoard[i] = guess
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, exit_gracefully)
     welcome_message()
     secretKeeper = SecretKeeper()
     gameBoard = GameBoard(secretKeeper, len(sys.argv) > 1 and sys.argv[1] == "-v")
@@ -102,12 +104,13 @@ if __name__ == '__main__':
     while secretKeeper.word:
         print_game_area(gameBoard)
         guess = input("Your guess (input '-help' for assistance): ")
-        clear_screen()
-        print()
         if guess == "-help" or guess == "-best" or guess == "-v":
+            clear_screen()
             guess = handle_flag(guess, gameBoard)
             if not guess:
                 continue
+        else:
+            clear_screen()
         if gameBoard.make_guess(guess):
             gameBoard.update_current_board(guess)
         if gameBoard.incorrectCount == 6 or gameBoard.correctCount == secretKeeper.wordLen:
