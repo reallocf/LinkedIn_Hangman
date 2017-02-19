@@ -24,7 +24,7 @@ Run instructions:
 
     All it takes is one line on the command line while in the codebase's directory:
 
-        python3 main.py
+        python3 project/main.py
 
 
 Play instructions:
@@ -119,7 +119,7 @@ Extensions:
 
     This can be toggled at any guess by inputting '-v' or can be initially set to on by providing a flag at the initial execution:
 
-        python3 main.py -v
+        python3 project/main.py -v
 
     -v is used to better visualize what -best is doing at every step. When on, -v displays details about each of the two steps. Namely:
 
