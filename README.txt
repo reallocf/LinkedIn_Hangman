@@ -22,7 +22,7 @@ Build instructions:
 
 Run instructions:
 
-    All it takes is one line on the command line while in the codebase's directory:
+    All it takes is one line on the command line while in the codebase's root directory:
 
         python3 project/main.py
 
@@ -78,7 +78,7 @@ Extensions:
 
             Example, board:             _ _ _
 
-                     incorrect letters: ['c']
+                     incorrect guesses: ['c']
 
                      given word:        cat
 
@@ -88,7 +88,7 @@ Extensions:
 
             Example, board:             b _ _
 
-                     incorrect letters: []
+                     incorrect guesses: []
 
                      given word:        cat
 
@@ -99,18 +99,16 @@ Extensions:
     Of course, if this process leaves only 1 word remaining, -best will guess it and succeed in finishing the problem. But what if there are still a large number of words?
 
 
-    STEP TWO, -best now loops through every word and decides to remove the letter that occurs in the most words. This does one of two things:
+    STEP TWO, -best now loops through every word and removes the letter that occurs in the most words. This does one of two things:
 
         If the letter it selects is a correct guess, that's great! You're now one letter closer to solving the problem.
 
         If -best guesses an incorrect letter, that's often even better! Now you've removed the maximum amount of remaining words, so -best will have an even easier time if called again.
 
-    And it does all of this in O(n) time relative to the total number of characters returned from the api call.
-
-    This takes a bit of time due to the large size of the provided dictionary, but is still accomplished in less than a few seconds even if used as the very first guess.
+    And it does all of this incredibly quickly due to it being only O(n) time relative to the number of charaters in the remaining words and through the power of list comprehensions.
 
 
-    Ultimately, -best is designed to be a game playing agent that can help you solve your hangman challenge even when they're really difficult.
+    Ultimately, -best is designed to be a game playing agent that can help you solve your hangman challenges even when they're really difficult.
 
     It's also fun to play with only -best selecting moves for you. If you're playing with -best from the beginning, it is very unlikely that you will lose.
 
@@ -129,7 +127,7 @@ Extensions:
 
     I believe that these two pieces of information provide valuable insight to how the algorithm is working and why it works as well as it does.
 
-    It also gives interesting insight into why it fails when it does.
+    It also gives interesting information into why it fails when it does.
 
     For example, the algorithm does not work well with very short words - when at 3 or 4 letters there are just too many similar options to allow for the problem to be properly constrained.
 
@@ -141,7 +139,28 @@ Extensions:
 
     I've also conceptualized a way to split the problem into multiple threads, further speeding up the runtime, but I don't know enough about threading to do so at this time - but I hope to learn!
 
-    Finally, it would be really interesting to see how this challenge would be tackled with an even larger dictionary. I figure that, at scale (hundreds of millions of words), this algorithm won't work because it will take too long, so maybe approaching it from another perspective (is this where prefix trees come in?) will be more effective at the cost of accuracy. Or maybe you just need to throw the processing power of a few hundred locally networked servers at it.
+    Finally, it would be really interesting to see how this challenge would be tackled with an even larger dictionary. I figure that, at scale (hundreds of millions of words), this algorithm won't work because it will take too long, so maybe approaching it from another perspective (is this where prefix trees come in?) will be more effective at the cost of accuracy.
+
+
+What I learned:
+
+     I learned a ton while working on this project.
+
+     I've been coding in C for the past 6 months, so switching gears to python took a few days. I also am not at all experienced in python, and I learned a ton about list comprehensions, dictionaries, and general python best practices over the last week.
+
+     I also had never set up a postgres database from scratch and I was really pleased that it took only an hour or two of tinkering before I got it working.
+
+     In terms of logic, at the very end of the project I did a complete overhaul where I used a rather abstract function (input_looper) and based all of the elements that required user input - so much of the game - around it. I think that this ultimately lead to much more readable, logical code where handling user input was always taken care of via this function instead of on the fly.
+
+What I now know I need to learn:
+
+     I will definitely be seeking to understand Python commenting, file structure, and directory structure best practices.
+
+     I also need to practice writing code more python-like (pythonically?) in general, especially in terms of leaning on existing standard Python functions.
+
+     I'd love to learn more about how to optimize runtime in Python. At first I wrote '-best' without leveraging list comprehensions and it was orders of magnitude slower than when I refactored it into what it is now. I'll definitely be looking into why list comprehensions are so much faster.
+
+     I'm also really interested in better ways of visualizing how '-best' works. I just started an Udacity Nanodegree in Artifical Intelligence on Friday (Feb 17th) and the program appears to be going over some agent visualization techniques (as well as general data visualization techniques) so hopefully that will be applicable!
 
 
 Anyways, thank you for the problem and I hope you have as much fun playing with my implementation as I did building it.

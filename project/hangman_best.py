@@ -34,7 +34,6 @@ def select_which_char(gameBoard):
     return print_best(gameBoard.wordsList, gameBoard.verbose, charPicker)
 
 # the computer decides which is the right move and selects it for you
-# via constraint propogation and search
 def get_best_move(gameBoard):
     remove_incorrect_words(gameBoard)
     if len(gameBoard.wordsList) == 1:
