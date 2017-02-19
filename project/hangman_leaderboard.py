@@ -1,7 +1,8 @@
 import os
 import psycopg2
 from termcolor import cprint
-from hangman_printers import print_game_area, print_leaderboard, print_leaderboard_help
+from hangman_printers import print_leaderboard, print_leaderboard_help
+from hangman_helpers import input_looper
 
 # connect to database on Digital Ocean droplet. If it cannot, print error and return False.
 def connect_to_db():
@@ -22,24 +23,17 @@ def get_leaderboard():
         cur.close()
         conn.close()
 
-def get_leaderboard_name(gameBoard):
-    name = input("Input your 3 character name for the leaderboard (input '-help' for assistance): ")
-    while True:
-        if name == "-help":
-            os.system('cls' if os.name == 'nt' else 'clear')
-            print_game_area(gameBoard)
-            print_leaderboard_help()
-        elif len(name) == 3 and name != '"""': # guard against pesky sql injection by disallowing three double quotes
-            return name
-        elif name == "":
-            return False
-        name = input("Please input a 3 character name for the leaderboard (input '-help' for assistance): ")
-
-def update_leaderboard(gameBoard):
+def update_leaderboard():
+    def corr_input(looper):
+        looper.statement = "\nPlease input a 3 character name for the leaderboard (input '-help' for assistance): "
+        return True if (len(looper.ret) == 3 and looper.ret != '"""') or looper.ret == "" else False
     conn = connect_to_db()
     if conn:
         cur = conn.cursor()
-        name = get_leaderboard_name(gameBoard)
+        name = input_looper(corr_input,
+                            "Input your 3 character name for the leaderboard (input '-help' for assistance): ",
+                            flags = ['-help'],
+                            flag_function = print_leaderboard_help)
         if name:
             cur.execute("""SELECT * FROM leaderboard WHERE name='{}'""".format(name))
             row = cur.fetchall()
