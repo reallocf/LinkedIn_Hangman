@@ -26,7 +26,7 @@ def get_leaderboard():
 def update_leaderboard():
     def corr_input(looper):
         looper.statement = "\nPlease input a 3 character name for the leaderboard (input '-help' for assistance): "
-        return True if (len(looper.ret) == 3 and looper.ret != '"""') or looper.ret == "" else False
+        return True if (len(looper.ret) == 3 and "'" not in looper.ret) or looper.ret == "" else False
     conn = connect_to_db()
     if conn:
         cur = conn.cursor()
@@ -35,13 +35,13 @@ def update_leaderboard():
                             flags = ['-help'],
                             flag_function = print_leaderboard_help)
         if name:
-            cur.execute("""SELECT * FROM leaderboard WHERE name='{}'""".format(name))
+            cur.execute("SELECT * FROM leaderboard WHERE name='{}'".format(name))
             row = cur.fetchall()
             if len(row) == 1:
                 new_win_count = row[0][1] + 1
-                cur.execute("""UPDATE leaderboard SET win_count={} WHERE name='{}'""".format(new_win_count, name))
+                cur.execute("UPDATE leaderboard SET win_count={} WHERE name='{}'".format(new_win_count, name))
             else:
-                cur.execute("""INSERT INTO leaderboard (name, win_count) VALUES ('{}', 1)""".format(name))
+                cur.execute("INSERT INTO leaderboard (name, win_count) VALUES ('{}', 1)".format(name))
             conn.commit()
         cur.close()
         conn.close()

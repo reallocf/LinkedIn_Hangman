@@ -12,12 +12,14 @@ def play_game(verbose):
     guesser = Guesser()
     secretKeeper = SecretKeeper(guesser.difficulty)
     gameBoard = GameBoard(guesser, secretKeeper, verbose)
+    guess_statement = "Input '-help' for assistance or '-best' for the computer to guess for you\n\nYour guess: "
     clear_screen()
     while True:
         guess = input_looper(correct_guess, # loop until a valid guess is given by the user
-                             "Your guess (input '-help' for assistance): ",
-                             extraData = {"word": secretKeeper.word, "guessedChars": guesser.guessedChars,
-                                          "statement": "Your guess (input '-help' for assistance): "},
+                             guess_statement,
+                             extraData = {"word": secretKeeper.word,
+                                          "guessedChars": guesser.guessedChars,
+                                          "statement": guess_statement},
                              start_function = print_game_area,
                              startParams = gameBoard,
                              middle_function = clear_screen,
@@ -37,8 +39,8 @@ def welcome_message():
     get_leaderboard()
 
 def correct_guess(looper):
-    incorrectInput = colored("Incorrect input, submit '-help' for assistance.", "blue", attrs=["bold"])
-    alreadyGuessed = colored("You've already guessed that, try again.", "blue", attrs=["bold"])
+    incorrectInput = colored("Incorrect input, submit '-help' for assistance", "blue", attrs=["bold"])
+    alreadyGuessed = colored("You've already guessed that, try again", "blue", attrs=["bold"])
     if (len(looper.ret) != 1 and len(looper.ret) != len(looper.data["word"])) or not looper.ret.isalpha() or not looper.ret.islower():
         looper.statement = incorrectInput + "\n\n" + looper.data["statement"]
     elif looper.ret in looper.data["guessedChars"]:
